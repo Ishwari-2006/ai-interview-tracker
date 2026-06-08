@@ -1,3 +1,25 @@
 PROJECT_URL = https://ijamtnfzmrayyplopype.supabase.co
 PUBLISHABLE_KEY = sb_publishable_BjK3Z5P8Sp0w5wkBEvRYsg_D-wp2M6s
 ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqYW10bmZ6bXJheXlwbG9weXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTg3MDcsImV4cCI6MjA5NTk5NDcwN30.5oiLcpkQF0-pGcyeqZ3Ndv5HA_rFMFPKBkbsybLlOCU
+
+Supabase:
+
+Project URL: https://ijamtnfzmrayyplopypp.supabase.co
+Project name: ai-interview-tracker-project
+
+Database:
+
+DATABASE_URL: postgresql://postgres.ijamtnfzmrayyplopypp:Ishu11072006AiInterview@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres
+
+Test User:
+
+Email: ishwari@test.com
+Password: test1234
+
+Interview ID (Google interview):
+
+ece656f4-00bc-4bba-b022-a2e224e787f9
+
+GitHub:
+
+Repo: https://github.com/Ishwari-2006/ai-interview-tracker
