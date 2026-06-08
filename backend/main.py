@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from database.connection import engine, Base
 from routes.auth import router as auth_router
 from routes.interviews import router as interviews_router
+from routes.questions import router as questions_router
+from routes.dashboard import router as dashboard_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,6 +20,8 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(interviews_router)
+app.include_router(questions_router)
+app.include_router(dashboard_router)
 
 @app.get("/")
 def root():
