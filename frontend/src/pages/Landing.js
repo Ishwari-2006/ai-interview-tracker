@@ -1,20 +1,11 @@
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
 
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-5 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">AI</div>
-          <span className="font-bold text-lg">InterviewTracker</span>
-        </div>
-        <div className="flex gap-3">
-          <Link to="/login" className="px-4 py-2 text-sm text-gray-300 hover:text-white transition">Login</Link>
-          <Link to="/register" className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 rounded-lg transition font-medium">Get Started Free</Link>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <div className="flex flex-col items-center text-center px-6 pt-24 pb-16">
@@ -59,41 +50,36 @@ export default function Landing() {
         <p className="text-gray-400 text-center mb-14">Stop winging it. Start tracking it.</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            {
-              icon: '📋',
-              title: 'Log Interviews',
-              desc: 'Record every interview with company, role, round type, difficulty and outcome in seconds.'
-            },
-            {
-              icon: '❓',
-              title: 'Track Questions',
-              desc: 'Save every question asked, tag by topic, mark what you were stuck on.'
-            },
-            {
-              icon: '🤖',
-              title: 'AI Study Plan',
-              desc: 'Claude AI analyzes your data and generates a personalized 2-week study plan for your weak areas.'
-            },
-            {
-              icon: '📊',
-              title: 'Visual Dashboard',
-              desc: 'See your pass rate, round breakdown, and topic heatmap at a glance.'
-            },
-            {
-              icon: '🎯',
-              title: 'Spot Weak Areas',
-              desc: 'Know exactly which topics are costing you offers — DSA, System Design, HR or others.'
-            },
-            {
-              icon: '🚀',
-              title: '100% Free',
-              desc: 'No credit card. No subscription. Built for students by a student.'
-            },
+            { icon: '📋', title: 'Log Interviews', desc: 'Record every interview with company, role, round type, difficulty and outcome in seconds.' },
+            { icon: '❓', title: 'Track Questions', desc: 'Save every question asked, tag by topic, mark what you were stuck on.' },
+            { icon: '🤖', title: 'AI Study Plan', desc: 'Claude AI analyzes your data and generates a personalized 2-week study plan for your weak areas.' },
+            { icon: '📊', title: 'Visual Dashboard', desc: 'See your pass rate, round breakdown, and topic heatmap at a glance.' },
+            { icon: '🎯', title: 'Spot Weak Areas', desc: 'Know exactly which topics are costing you offers — DSA, System Design, HR or others.' },
+            { icon: '🚀', title: '100% Free', desc: 'No credit card. No subscription. Built for students by a student.' },
           ].map((f) => (
             <div key={f.title} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/8 transition">
               <div className="text-3xl mb-4">{f.icon}</div>
               <h3 className="font-semibold text-white mb-2">{f.title}</h3>
               <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* How It Works Section */}
+      <div className="px-8 py-20 border-t border-white/10 max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-4">How it works</h2>
+        <p className="text-gray-400 text-center mb-14">Three simple steps to interview mastery</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { step: '01', title: 'Log your interviews', desc: 'After every interview, spend 2 minutes logging the company, round type, questions asked and outcome.' },
+            { step: '02', title: 'Track your questions', desc: 'Add every question you were asked. Tag it by topic. Mark if you were stuck.' },
+            { step: '03', title: 'Get AI insights', desc: 'Click Generate Insights and Claude AI analyzes all your data to give you a personalized study plan.' },
+          ].map((s) => (
+            <div key={s.step} className="text-center">
+              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 font-bold text-lg mx-auto mb-4">{s.step}</div>
+              <h3 className="font-semibold text-white mb-2">{s.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>
@@ -110,7 +96,7 @@ export default function Landing() {
 
       {/* Footer */}
       <div className="text-center py-6 border-t border-white/10 text-gray-500 text-sm">
-        Built with 💙 by Ishwari · AI Interview Tracker 2026
+        Built with 💙 · AI Interview Tracker 2026
       </div>
 
     </div>
