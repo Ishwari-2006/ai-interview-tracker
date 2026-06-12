@@ -62,7 +62,7 @@ export default function Landing() {
           {[
             { icon: '📋', title: 'Log Interviews', desc: 'Record every interview with company, role, round type, difficulty and outcome in seconds.' },
             { icon: '❓', title: 'Track Questions', desc: 'Save every question asked, tag by topic, mark what you were stuck on.' },
-            { icon: '🤖', title: 'AI Study Plan', desc: 'Claude AI analyzes your data and generates a personalized 2-week study plan for your weak areas.' },
+            { icon: '🤖', title: 'AI Study Plan', desc: 'AI analyzes your data and generates a personalized 2-week study plan for your weak areas.' },
             { icon: '📊', title: 'Visual Dashboard', desc: 'See your pass rate, round breakdown, and topic heatmap at a glance.' },
             { icon: '🎯', title: 'Spot Weak Areas', desc: 'Know exactly which topics are costing you offers — DSA, System Design, HR or others.' },
             { icon: '🚀', title: '100% Free', desc: 'No credit card. No subscription. Built for students by a student.' },
@@ -84,7 +84,7 @@ export default function Landing() {
           {[
             { step: '01', title: 'Log your interviews', desc: 'After every interview, spend 2 minutes logging the company, round type, questions asked and outcome.' },
             { step: '02', title: 'Track your questions', desc: 'Add every question you were asked. Tag it by topic. Mark if you were stuck.' },
-            { step: '03', title: 'Get AI insights', desc: 'Click Generate Insights and Claude AI analyzes all your data to give you a personalized study plan.' },
+            { step: '03', title: 'Get AI insights', desc: 'Click Generate Insights and AI analyzes all your data to give you a personalized study plan.' },
           ].map((s) => (
             <div key={s.step} className="text-center">
               <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 font-bold text-lg mx-auto mb-4">{s.step}</div>

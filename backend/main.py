@@ -5,10 +5,12 @@ from routes.auth import router as auth_router
 from routes.interviews import router as interviews_router
 from routes.questions import router as questions_router
 from routes.dashboard import router as dashboard_router
+from routes.insights import router as insights_router
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AI Interview Tracker API")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +24,7 @@ app.include_router(auth_router)
 app.include_router(interviews_router)
 app.include_router(questions_router)
 app.include_router(dashboard_router)
+app.include_router(insights_router)
 
 @app.get("/")
 def root():

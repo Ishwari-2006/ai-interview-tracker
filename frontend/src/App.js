@@ -7,7 +7,8 @@ import LogInterview from './pages/LogInterview';
 import Dashboard from './pages/Dashboard';
 import History from './pages/History';      
 import Questions from './pages/Questions';
-import Profile from './pages/Profile'; 
+import Profile from './pages/Profile';
+import Insights from './pages/Insights'; 
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -27,6 +28,7 @@ function App() {
           <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />   {/* UPDATED */}
           <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/insights" element={<PrivateRoute><Insights /></PrivateRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
