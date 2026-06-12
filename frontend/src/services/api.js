@@ -22,5 +22,7 @@ export const getQuestions = (topic) => API.get('/questions/', { params: { topic_
 export const createQuestion = (data) => API.post('/questions/', data);
 export const deleteQuestion = (id) => API.delete(`/questions/${id}`);
 export const getDashboardStats = () => API.get('/dashboard/stats');
+export const getProfile = () => API.get('/auth/me');
+export const updateProfile = (data) => API.put('/auth/me', data);
 
 export default API;

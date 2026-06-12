@@ -23,6 +23,7 @@ export default function Navbar() {
             <Link to="/log" className="text-sm text-gray-300 hover:text-white transition">Log Interview</Link>
             <Link to="/history" className="text-sm text-gray-300 hover:text-white transition">History</Link>
             <Link to="/questions" className="text-sm text-gray-300 hover:text-white transition">Questions</Link>
+            <Link to="/profile" className="text-sm text-gray-300 hover:text-white transition">Profile</Link>
             <button onClick={handleLogout} className="px-4 py-2 text-sm bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition">Logout</button>
           </>
         ) : (
