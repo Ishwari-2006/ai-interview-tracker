@@ -5,7 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import LogInterview from './pages/LogInterview';
 import Dashboard from './pages/Dashboard';
-import History from './pages/History';      // ADD THIS
+import History from './pages/History';      
+import Questions from './pages/Questions';
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -23,7 +24,7 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/log" element={<PrivateRoute><LogInterview /></PrivateRoute>} />
           <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />   {/* UPDATED */}
-          <Route path="/questions" element={<PrivateRoute><div className="min-h-screen bg-slate-900 flex items-center justify-center text-white text-2xl font-bold">Questions — Coming Day 12!</div></PrivateRoute>} />
+          <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
