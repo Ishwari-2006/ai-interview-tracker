@@ -105,14 +105,13 @@ async def generate_insights(
         )
 
     result = response.json()
-    
-    # ADD THIS - print what Groq returned so we can see the error
-    print("Groq response:", result)
-    
-    # Check if there's an error in the response
+
     if "error" in result:
-        print("Groq error:", result["error"])
-        return {"insights": "Error from Groq: " + str(result["error"])}
-    
+        error_msg = result["error"].get("message", "Unknown error")
+        # Return a friendly message instead of crashing
+        if "rate_limit" in str(result["error"]).lower():
+            return {"insights": "## Rate Limit Reached\nYou are generating insights too quickly. Please wait 30 seconds and try again."}
+        return {"insights": f"## Error\n{error_msg}"}
+
     text = result["choices"][0]["message"]["content"]
     return {"insights": text}
