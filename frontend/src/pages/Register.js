@@ -37,6 +37,13 @@ export default function Register() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center px-4">
       <div className="bg-white/5 border border-white/10 backdrop-blur p-8 rounded-2xl w-full max-w-md">
 
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-1 text-gray-500 hover:text-gray-300 text-sm mb-6 transition"
+        >
+          ← Back to home
+        </button>
+
         <div className="flex items-center gap-2 justify-center mb-6">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">AI</div>
           <span className="font-bold text-lg text-white">InterviewTracker</span>
