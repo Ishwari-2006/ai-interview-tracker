@@ -28,6 +28,10 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
+    print("PASSWORD:", repr(request.password))
+    print("TYPE:", type(request.password))
+    print("LENGTH:", len(request.password))
+
     hashed = hash_password(request.password)
     new_user = User(
         name=request.name,
