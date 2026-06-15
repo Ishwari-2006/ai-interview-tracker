@@ -26,5 +26,6 @@ export const getProfile = () => API.get('/auth/me');
 export const updateProfile = (data) => API.put('/auth/me', data);
 export const getInsights = (data) => API.post('/dashboard/insights', data);
 export const generateInsights = (data) => API.post('/insights/generate', data);
+export const getClusteredQuestions = () => API.get('/clustering/');
 
 export default API;

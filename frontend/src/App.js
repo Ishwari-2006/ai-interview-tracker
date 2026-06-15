@@ -9,6 +9,7 @@ import History from './pages/History';
 import Questions from './pages/Questions';
 import Profile from './pages/Profile';
 import Insights from './pages/Insights'; 
+import Clustering from './pages/Clustering';
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -29,6 +30,7 @@ function App() {
           <Route path="/questions" element={<PrivateRoute><Questions /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/insights" element={<PrivateRoute><Insights /></PrivateRoute>} />
+          <Route path="/clustering" element={<PrivateRoute><Clustering /></PrivateRoute>} />
         </Routes>
       </Router>
     </AuthProvider>

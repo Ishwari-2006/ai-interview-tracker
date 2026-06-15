@@ -6,6 +6,7 @@ from routes.interviews import router as interviews_router
 from routes.questions import router as questions_router
 from routes.dashboard import router as dashboard_router
 from routes.insights import router as insights_router
+from routes.clustering import router as clustering_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,6 +26,7 @@ app.include_router(interviews_router)
 app.include_router(questions_router)
 app.include_router(dashboard_router)
 app.include_router(insights_router)
+app.include_router(clustering_router)
 
 @app.get("/")
 def root():
