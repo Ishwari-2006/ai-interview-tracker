@@ -8,7 +8,4 @@ python-jose
 email-validator
 python-multipart
 httpx
-sentence-transformers
-scikit-learn
-numpy
 reportlab
