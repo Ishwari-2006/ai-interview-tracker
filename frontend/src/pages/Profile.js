@@ -61,7 +61,7 @@ export default function Profile() {
   const downloadPDF = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch('http://127.0.0.1:8000/pdf/report', {
+    const response = await fetch('https://ai-interview-tracker-backend.onrender.com/pdf/report', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
