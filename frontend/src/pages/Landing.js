@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,57 +8,93 @@ export default function Landing() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/dashboard');
-    }
+    if (isLoggedIn) navigate('/dashboard');
   }, [isLoggedIn, navigate]);
 
+  const S = {
+    page: { backgroundColor: '#f5f0e8', minHeight: '100vh', fontFamily: 'Inter, sans-serif' },
+    hero: { backgroundColor: '#f5f0e8', padding: '80px 24px 60px' },
+    heroInner: { maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' },
+    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#ede6d6', border: '1px solid #ddd0bc', color: '#8b5e3c', fontSize: '12px', fontWeight: '500', padding: '6px 14px', borderRadius: '20px', marginBottom: '20px' },
+    h1: { fontFamily: 'Playfair Display, serif', fontSize: '52px', fontWeight: '700', color: '#2c1a0e', lineHeight: '1.15', marginBottom: '20px' },
+    accent: { color: '#8b5e3c' },
+    subtext: { color: '#6b4c3b', fontSize: '17px', lineHeight: '1.7', marginBottom: '32px', maxWidth: '460px' },
+    btnPrimary: { backgroundColor: '#2c1a0e', color: '#f5f0e8', padding: '14px 28px', borderRadius: '10px', fontWeight: '600', fontSize: '15px', textDecoration: 'none', display: 'inline-block', marginRight: '12px' },
+    btnSecondary: { backgroundColor: 'transparent', color: '#2c1a0e', padding: '14px 28px', borderRadius: '10px', fontWeight: '600', fontSize: '15px', textDecoration: 'none', display: 'inline-block', border: '1.5px solid #2c1a0e' },
+    heroImg: { width: '100%', borderRadius: '16px', objectFit: 'cover', height: '460px', boxShadow: '0 20px 60px rgba(44,26,14,0.15)' },
+    statsRow: { backgroundColor: '#ede6d6', borderTop: '1px solid #ddd0bc', borderBottom: '1px solid #ddd0bc', padding: '28px 24px' },
+    statsInner: { maxWidth: '700px', margin: '0 auto', display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '20px' },
+    statNum: { fontFamily: 'Playfair Display, serif', fontSize: '32px', fontWeight: '700', color: '#8b5e3c' },
+    statLabel: { color: '#6b4c3b', fontSize: '13px', marginTop: '4px' },
+    section: { padding: '80px 24px', maxWidth: '1100px', margin: '0 auto' },
+    sectionTitle: { fontFamily: 'Playfair Display, serif', fontSize: '36px', fontWeight: '700', color: '#2c1a0e', textAlign: 'center', marginBottom: '12px' },
+    sectionSub: { color: '#6b4c3b', textAlign: 'center', marginBottom: '48px', fontSize: '16px' },
+    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' },
+    card: { backgroundColor: '#ffffff', border: '1px solid #ddd0bc', borderRadius: '16px', padding: '28px' },
+    cardIcon: { fontSize: '28px', marginBottom: '16px' },
+    cardTitle: { fontFamily: 'Playfair Display, serif', fontSize: '18px', color: '#2c1a0e', marginBottom: '8px', fontWeight: '600' },
+    cardText: { color: '#6b4c3b', fontSize: '14px', lineHeight: '1.7' },
+    stepNum: { fontFamily: 'Playfair Display, serif', fontSize: '48px', fontWeight: '700', color: '#ddd0bc', marginBottom: '8px' },
+    stepTitle: { fontFamily: 'Playfair Display, serif', fontSize: '18px', color: '#2c1a0e', marginBottom: '8px', fontWeight: '600' },
+    cta: { backgroundColor: '#2c1a0e', padding: '80px 24px', textAlign: 'center' },
+    ctaTitle: { fontFamily: 'Playfair Display, serif', fontSize: '36px', color: '#f5f0e8', marginBottom: '16px', fontWeight: '700' },
+    ctaSub: { color: '#c4956a', marginBottom: '32px', fontSize: '16px' },
+    ctaBtn: { backgroundColor: '#f5f0e8', color: '#2c1a0e', padding: '16px 36px', borderRadius: '10px', fontWeight: '700', fontSize: '16px', textDecoration: 'none', display: 'inline-block' },
+    footer: { backgroundColor: '#ede6d6', borderTop: '1px solid #ddd0bc', textAlign: 'center', padding: '20px', color: '#9b7e6e', fontSize: '13px' },
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
+    <div style={S.page}>
       <Navbar />
 
-      {/* Hero Section */}
-      <div className="flex flex-col items-center text-center px-6 pt-24 pb-16">
-        <div className="inline-block bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium px-4 py-1.5 rounded-full mb-6">
-          ✨ AI-Powered Interview Preparation
-        </div>
-        <h1 className="text-5xl md:text-6xl font-bold leading-tight max-w-3xl mb-6">
-          Track Interviews.<br />
-          <span className="text-blue-400">Identify Weaknesses.</span><br />
-          Get Hired Faster.
-        </h1>
-        <p className="text-gray-400 text-lg max-w-xl mb-10">
-          Log every interview, track questions asked, and let AI analyze your patterns to give you a personalized study plan.
-        </p>
-        <div className="flex gap-4 flex-wrap justify-center">
-          <Link to="/register" className="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold text-white transition text-sm">
-            Start Tracking Free →
-          </Link>
-          <Link to="/login" className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-semibold text-white transition text-sm">
-            Login
-          </Link>
-        </div>
-      </div>
-
-      {/* Stats Bar */}
-      <div className="flex justify-center gap-12 py-10 border-y border-white/10 mx-8 flex-wrap">
-        {[
-          { number: '10x', label: 'Better Preparation' },
-          { number: '100%', label: 'Free Forever' },
-          { number: 'AI', label: 'Powered Insights' },
-        ].map((stat) => (
-          <div key={stat.label} className="text-center">
-            <div className="text-3xl font-bold text-blue-400">{stat.number}</div>
-            <div className="text-gray-400 text-sm mt-1">{stat.label}</div>
+      {/* HERO */}
+      <div style={S.hero}>
+        <div style={S.heroInner}>
+          <div>
+            <h1 style={S.h1}>
+              Track Interviews.<br />
+              Identify Weaknesses.<br />
+              <span style={S.accent}>Get Hired Faster.</span>
+            </h1>
+            <p style={S.subtext}>
+              Log every interview, track questions asked, and let AI analyze your patterns to give you a personalized study plan.
+            </p>
+            <div>
+              <Link to="/register" style={S.btnPrimary}>Start Tracking Free →</Link>
+              <Link to="/login" style={S.btnSecondary}>Login</Link>
+            </div>
           </div>
-        ))}
+          <div>
+            <img
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+              alt="Professional interview"
+              style={S.heroImg}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Features Section */}
-      <div className="px-8 py-20 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-4">Everything you need to crack interviews</h2>
-        <p className="text-gray-400 text-center mb-14">Stop winging it. Start tracking it.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* STATS */}
+      <div style={S.statsRow}>
+        <div style={S.statsInner}>
+          {[
+            { num: '10x', label: 'Better Preparation' },
+            { num: '100%', label: 'Free Forever' },
+            { num: 'AI', label: 'Powered Insights' },
+          ].map(s => (
+            <div key={s.label} style={{ textAlign: 'center' }}>
+              <div style={S.statNum}>{s.num}</div>
+              <div style={S.statLabel}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* FEATURES */}
+      <div style={S.section}>
+        <h2 style={S.sectionTitle}>Everything you need to crack interviews</h2>
+        <p style={S.sectionSub}>Stop winging it. Start tracking it.</p>
+        <div style={S.grid3}>
           {[
             { icon: '📋', title: 'Log Interviews', desc: 'Record every interview with company, role, round type, difficulty and outcome in seconds.' },
             { icon: '❓', title: 'Track Questions', desc: 'Save every question asked, tag by topic, mark what you were stuck on.' },
@@ -66,49 +102,45 @@ export default function Landing() {
             { icon: '📊', title: 'Visual Dashboard', desc: 'See your pass rate, round breakdown, and topic heatmap at a glance.' },
             { icon: '🎯', title: 'Spot Weak Areas', desc: 'Know exactly which topics are costing you offers — DSA, System Design, HR or others.' },
             { icon: '🚀', title: '100% Free', desc: 'No credit card. No subscription. Built for students by a student.' },
-          ].map((f) => (
-            <div key={f.title} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/8 transition">
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="font-semibold text-white mb-2">{f.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+          ].map(f => (
+            <div key={f.title} style={S.card}>
+              <div style={S.cardIcon}>{f.icon}</div>
+              <div style={S.cardTitle}>{f.title}</div>
+              <div style={S.cardText}>{f.desc}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* How It Works Section */}
-      <div className="px-8 py-20 border-t border-white/10 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-4">How it works</h2>
-        <p className="text-gray-400 text-center mb-14">Three simple steps to interview mastery</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { step: '01', title: 'Log your interviews', desc: 'After every interview, spend 2 minutes logging the company, round type, questions asked and outcome.' },
-            { step: '02', title: 'Track your questions', desc: 'Add every question you were asked. Tag it by topic. Mark if you were stuck.' },
-            { step: '03', title: 'Get AI insights', desc: 'Click Generate Insights and AI analyzes all your data to give you a personalized study plan.' },
-          ].map((s) => (
-            <div key={s.step} className="text-center">
-              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 font-bold text-lg mx-auto mb-4">{s.step}</div>
-              <h3 className="font-semibold text-white mb-2">{s.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
+      {/* HOW IT WORKS */}
+      <div style={{ backgroundColor: '#ede6d6', padding: '80px 24px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2 style={S.sectionTitle}>How it works</h2>
+          <p style={S.sectionSub}>Three simple steps to interview mastery</p>
+          <div style={S.grid3}>
+            {[
+              { step: '01', title: 'Log your interviews', desc: 'After every interview, spend 2 minutes logging the company, round type, questions asked and outcome.' },
+              { step: '02', title: 'Track your questions', desc: 'Add every question you were asked. Tag it by topic. Mark if you were stuck.' },
+              { step: '03', title: 'Get AI insights', desc: 'Click Generate Insights and AI analyzes all your data to give you a personalized study plan.' },
+            ].map(s => (
+              <div key={s.step} style={{ textAlign: 'center', padding: '20px' }}>
+                <div style={S.stepNum}>{s.step}</div>
+                <div style={S.stepTitle}>{s.title}</div>
+                <div style={S.cardText}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="text-center px-8 py-20 border-t border-white/10">
-        <h2 className="text-3xl font-bold mb-4">Ready to land your dream internship?</h2>
-        <p className="text-gray-400 mb-8">Join students who track smarter, not harder.</p>
-        <Link to="/register" className="px-10 py-4 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold text-white transition inline-block">
-          Get Started — It's Free 🚀
-        </Link>
+      {/* CTA */}
+      <div style={S.cta}>
+        <h2 style={S.ctaTitle}>Ready to land your dream internship?</h2>
+        <p style={S.ctaSub}>Join students who track smarter, not harder.</p>
+        <Link to="/register" style={S.ctaBtn}>Get Started — It's Free 🚀</Link>
       </div>
 
-      {/* Footer */}
-      <div className="text-center py-6 border-t border-white/10 text-gray-500 text-sm">
-        Built with 💙 · AI Interview Tracker 2026
-      </div>
-
+      <div style={S.footer}>Built with 💙 · AI Interview Tracker 2026</div>
     </div>
   );
 }

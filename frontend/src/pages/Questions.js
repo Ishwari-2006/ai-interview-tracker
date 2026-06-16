@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { getQuestions, createQuestion, deleteQuestion, getInterviews } from '../services/api';
+import { T } from '../styles/theme';
 
 export default function Questions() {
   const [questions, setQuestions] = useState([]);
-  const [interviews, setInterviews] = useState([]); // needed for the "which interview" dropdown
-  const [filter, setFilter] = useState('All');       // active topic filter
+  const [interviews, setInterviews] = useState([]);
+  const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState(null);
-  const [showForm, setShowForm] = useState(false);   // toggle add question form
-
-  // Form fields
+  const [showForm, setShowForm] = useState(false);
   const [interviewId, setInterviewId] = useState('');
   const [questionText, setQuestionText] = useState('');
   const [topicTag, setTopicTag] = useState('');
@@ -19,320 +18,142 @@ export default function Questions() {
   const [wasStuck, setWasStuck] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch both questions and interviews when page loads
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [qRes, iRes] = await Promise.all([
-          getQuestions(),    // GET /questions/
-          getInterviews(),   // GET /interviews/ — for the dropdown
-        ]);
-        setQuestions(qRes.data);
-        setInterviews(iRes.data);
-      } catch (err) {
-        setError('Failed to load data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    Promise.all([getQuestions(), getInterviews()])
+      .then(([qRes, iRes]) => { setQuestions(qRes.data); setInterviews(iRes.data); })
+      .catch(() => setError('Failed to load data.'))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Get unique topic tags from all questions — for filter buttons
-  // new Set() removes duplicates, filter(Boolean) removes null/empty values
   const allTopics = ['All', ...new Set(questions.map(q => q.topic_tag).filter(Boolean))];
+  const filtered = filter === 'All' ? questions : questions.filter(q => q.topic_tag === filter);
+  const topicOptions = ['DSA', 'System Design', 'OOP', 'DBMS', 'OS', 'Networking', 'HR', 'Behavioral', 'Frontend', 'Backend', 'Other'];
 
-  // Filter questions by selected topic
-  const filtered = filter === 'All'
-    ? questions
-    : questions.filter(q => q.topic_tag === filter);
-
-  // Handle adding a new question
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const data = {
-        interview_id: interviewId,
-        question_text: questionText,
-        topic_tag: topicTag || null,
-        my_answer: myAnswer || null,
-        was_stuck: wasStuck,
-      };
-      const res = await createQuestion(data);
-      
-      // Add new question to local state immediately (no re-fetch needed)
-      const newQuestion = {
-        id: res.data.question_id,
-        interview_id: interviewId,
-        question_text: questionText,
-        topic_tag: topicTag || null,
-        my_answer: myAnswer || null,
-        was_stuck: wasStuck,
-        created_at: new Date().toISOString(),
-      };
-      setQuestions(prev => [newQuestion, ...prev]);
-
-      // Reset form fields
-      setQuestionText('');
-      setTopicTag('');
-      setMyAnswer('');
-      setWasStuck(false);
-      setInterviewId('');
-      setShowForm(false); // hide form after submit
-
-    } catch (err) {
-      alert('Failed to add question. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
+      const res = await createQuestion({ interview_id: interviewId, question_text: questionText, topic_tag: topicTag || null, my_answer: myAnswer || null, was_stuck: wasStuck });
+      setQuestions(prev => [{ id: res.data.question_id, interview_id: interviewId, question_text: questionText, topic_tag: topicTag || null, my_answer: myAnswer || null, was_stuck: wasStuck, created_at: new Date().toISOString() }, ...prev]);
+      setQuestionText(''); setTopicTag(''); setMyAnswer(''); setWasStuck(false); setInterviewId(''); setShowForm(false);
+    } catch { alert('Failed to add question.'); }
+    finally { setSubmitting(false); }
   };
 
-  // Handle delete
   const handleDelete = async (id) => {
-    const confirmed = window.confirm('Delete this question?');
-    if (!confirmed) return;
+    if (!window.confirm('Delete this question?')) return;
     setDeletingId(id);
-    try {
-      await deleteQuestion(id);
-      setQuestions(prev => prev.filter(q => q.id !== id));
-    } catch (err) {
-      alert('Failed to delete. Please try again.');
-    } finally {
-      setDeletingId(null);
-    }
+    try { await deleteQuestion(id); setQuestions(prev => prev.filter(q => q.id !== id)); }
+    catch { alert('Failed to delete.'); }
+    finally { setDeletingId(null); }
   };
 
-  const inputClass = "w-full bg-white/5 border border-white/10 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-sm";
-  const labelClass = "block text-sm font-medium text-gray-300 mb-1";
-  const selectClass = "w-full bg-slate-800 border border-white/10 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
-
-  // Predefined topic tags to choose from
-  const topicOptions = ['DSA', 'System Design', 'OOP', 'DBMS', 'OS', 'Networking', 'HR', 'Behavioral', 'Frontend', 'Backend', 'Other'];
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
-        <Navbar />
-        <div className="flex items-center justify-center h-96">
-          <div className="text-gray-400 animate-pulse">Loading questions...</div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div style={T.page}><Navbar /><div style={{ textAlign: 'center', padding: '100px', color: '#9b7e6e', fontStyle: 'italic' }}>Loading questions...</div></div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
+    <div style={T.page}>
       <Navbar />
-
-      <div className="max-w-5xl mx-auto px-6 py-10">
-
-        {/* Page header */}
-        <div className="flex items-center justify-between mb-8">
+      <div style={T.container}>
+        <div style={T.pageHeader}>
           <div>
-            <h1 className="text-3xl font-bold text-white">Question Bank</h1>
-            <p className="text-gray-400 mt-1">
-              {questions.length} question{questions.length !== 1 ? 's' : ''} logged
-            </p>
+            <h1 style={T.pageTitle}>Question Bank</h1>
+            <p style={{ color: '#9b7e6e', fontSize: '14px' }}>{questions.length} question{questions.length !== 1 ? 's' : ''} logged</p>
           </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition"
-          >
+          <button style={T.btnPrimary} onClick={() => setShowForm(!showForm)}>
             {showForm ? '✕ Cancel' : '+ Add Question'}
           </button>
         </div>
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg mb-6 text-sm">
-            {error}
-          </div>
-        )}
+        {error && <div style={{ ...T.error, marginBottom: '20px' }}>{error}</div>}
 
-        {/* Add Question Form — slides in when showForm is true */}
+        {/* Add form */}
         {showForm && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
-            <h2 className="text-lg font-semibold text-white mb-5">Add New Question</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-
-              {/* Interview selector */}
+          <div style={{ ...T.card, marginBottom: '24px' }}>
+            <h2 style={{ ...T.sectionTitle, marginBottom: '20px' }}>Add New Question</h2>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label className={labelClass}>Which Interview? *</label>
-                <select
-                  value={interviewId}
-                  onChange={(e) => setInterviewId(e.target.value)}
-                  className={selectClass}
-                  required
-                >
+                <label style={T.label}>Which Interview? *</label>
+                <select value={interviewId} onChange={e => setInterviewId(e.target.value)} style={T.select} required>
                   <option value="">-- Select Interview --</option>
-                  {interviews.map(i => (
-                    <option key={i.id} value={i.id}>
-                      {i.company_name} {i.role ? `— ${i.role}` : ''} {i.interview_date ? `(${i.interview_date})` : ''}
-                    </option>
-                  ))}
+                  {interviews.map(i => <option key={i.id} value={i.id}>{i.company_name}{i.role ? ` — ${i.role}` : ''}</option>)}
                 </select>
               </div>
-
-              {/* Question text */}
               <div>
-                <label className={labelClass}>Question *</label>
-                <textarea
-                  value={questionText}
-                  onChange={(e) => setQuestionText(e.target.value)}
-                  className={inputClass}
-                  rows={3}
-                  placeholder="What was the question asked?"
-                  required
-                />
+                <label style={T.label}>Question *</label>
+                <textarea value={questionText} onChange={e => setQuestionText(e.target.value)} style={{ ...T.textarea, minHeight: '80px' }} placeholder="What was the question asked?" required />
               </div>
-
-              {/* Topic tag + Was stuck — side by side */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
-                  <label className={labelClass}>Topic Tag</label>
-                  <select
-                    value={topicTag}
-                    onChange={(e) => setTopicTag(e.target.value)}
-                    className={selectClass}
-                  >
+                  <label style={T.label}>Topic Tag</label>
+                  <select value={topicTag} onChange={e => setTopicTag(e.target.value)} style={T.select}>
                     <option value="">-- Select Topic --</option>
-                    {topicOptions.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
+                    {topicOptions.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
-                <div className="flex items-end pb-1">
-                  {/* Checkbox for was_stuck */}
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <div
-                      onClick={() => setWasStuck(!wasStuck)}
-                      className={`w-5 h-5 rounded border-2 flex items-center justify-center transition cursor-pointer ${
-                        wasStuck
-                          ? 'bg-red-500 border-red-500'
-                          : 'border-white/20 bg-white/5 group-hover:border-white/40'
-                      }`}
-                    >
-                      {wasStuck && <span className="text-white text-xs">✓</span>}
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '4px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                    <div onClick={() => setWasStuck(!wasStuck)} style={{ width: '20px', height: '20px', borderRadius: '6px', border: `2px solid ${wasStuck ? '#8b2e2e' : '#ddd0bc'}`, backgroundColor: wasStuck ? '#8b2e2e' : '#f9f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                      {wasStuck && <span style={{ color: 'white', fontSize: '11px' }}>✓</span>}
                     </div>
-                    <span className="text-sm text-gray-300">I was stuck on this</span>
+                    <span style={{ fontSize: '13px', color: '#5c3d2e' }}>I was stuck on this</span>
                   </label>
                 </div>
               </div>
-
-              {/* My answer */}
               <div>
-                <label className={labelClass}>My Answer <span className="text-gray-500">(optional)</span></label>
-                <textarea
-                  value={myAnswer}
-                  onChange={(e) => setMyAnswer(e.target.value)}
-                  className={inputClass}
-                  rows={3}
-                  placeholder="What did you answer? What should you have said?"
-                />
+                <label style={T.label}>My Answer <span style={{ color: '#9b7e6e' }}>(optional)</span></label>
+                <textarea value={myAnswer} onChange={e => setMyAnswer(e.target.value)} style={{ ...T.textarea, minHeight: '80px' }} placeholder="What did you answer? What should you have said?" />
               </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg font-medium transition disabled:opacity-50 text-sm"
-              >
+              <button type="submit" disabled={submitting} style={{ ...T.btnFull, opacity: submitting ? 0.6 : 1 }}>
                 {submitting ? 'Saving...' : '💾 Save Question'}
               </button>
             </form>
           </div>
         )}
 
-        {/* Empty state */}
         {questions.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-16 text-center">
-            <div className="text-5xl mb-4">❓</div>
-            <h2 className="text-xl font-semibold text-white mb-2">No questions logged yet</h2>
-            <p className="text-gray-400 mb-6">Add questions from your interviews to track what topics come up.</p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition"
-            >
-              Add Your First Question →
-            </button>
+          <div style={{ ...T.card, textAlign: 'center', padding: '64px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>❓</div>
+            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '22px', color: '#2c1a0e', marginBottom: '8px' }}>No questions logged yet</h2>
+            <p style={{ color: '#9b7e6e', marginBottom: '24px', fontSize: '14px' }}>Add questions from your interviews to track what topics come up.</p>
+            <button style={T.btnPrimary} onClick={() => setShowForm(true)}>Add Your First Question →</button>
           </div>
         ) : (
           <>
-            {/* Topic filter pills */}
-            <div className="flex gap-2 flex-wrap mb-6">
+            {/* Topic filters */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
               {allTopics.map(topic => (
-                <button
-                  key={topic}
-                  onClick={() => setFilter(topic)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition ${
-                    filter === topic
-                      ? 'bg-blue-600 border-blue-600 text-white'
-                      : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {topic}
-                  <span className="ml-1.5 opacity-60">
-                    {topic === 'All'
-                      ? questions.length
-                      : questions.filter(q => q.topic_tag === topic).length}
-                  </span>
+                <button key={topic} onClick={() => setFilter(topic)} style={{
+                  padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', cursor: 'pointer', border: '1.5px solid',
+                  backgroundColor: filter === topic ? '#2c1a0e' : '#ffffff',
+                  color: filter === topic ? '#f5f0e8' : '#5c3d2e',
+                  borderColor: filter === topic ? '#2c1a0e' : '#ddd0bc',
+                }}>
+                  {topic} <span style={{ opacity: 0.6 }}>{topic === 'All' ? questions.length : questions.filter(q => q.topic_tag === topic).length}</span>
                 </button>
               ))}
             </div>
 
-            {/* No results for this filter */}
             {filtered.length === 0 ? (
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-10 text-center text-gray-500">
-                No questions tagged "{filter}" yet.
-              </div>
+              <div style={{ ...T.card, textAlign: 'center', padding: '40px', color: '#9b7e6e', fontSize: '14px' }}>No questions tagged "{filter}" yet.</div>
             ) : (
-              /* Questions list */
-              <div className="space-y-3">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {filtered.map(question => (
-                  <div
-                    key={question.id}
-                    className={`bg-white/5 border rounded-xl p-5 transition hover:bg-white/8 ${
-                      question.was_stuck
-                        ? 'border-red-500/20'   // red border if stuck
-                        : 'border-white/10'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-
-                        {/* Top row: topic tag + stuck badge */}
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          {question.topic_tag && (
-                            <span className="px-2.5 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded-full font-medium">
-                              {question.topic_tag}
-                            </span>
-                          )}
-                          {question.was_stuck && (
-                            <span className="px-2.5 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-full font-medium">
-                              🔴 Was Stuck
-                            </span>
-                          )}
+                  <div key={question.id} style={{ ...T.card, border: `1px solid ${question.was_stuck ? '#f0d0d0' : '#ddd0bc'}`, backgroundColor: question.was_stuck ? '#fdf9f9' : '#ffffff' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                          {question.topic_tag && <span style={T.badge('brown')}>{question.topic_tag}</span>}
+                          {question.was_stuck && <span style={T.badge('red')}>🔴 Was Stuck</span>}
                         </div>
-
-                        {/* Question text */}
-                        <p className="text-white text-sm font-medium leading-relaxed">
-                          {question.question_text}
-                        </p>
-
-                        {/* My answer — only shown if exists */}
+                        <p style={{ color: '#2c1a0e', fontSize: '14px', fontWeight: '500', lineHeight: '1.6' }}>{question.question_text}</p>
                         {question.my_answer && (
-                          <div className="mt-3 bg-white/5 rounded-lg px-4 py-3">
-                            <div className="text-xs text-gray-500 mb-1 font-medium">MY ANSWER</div>
-                            <p className="text-gray-300 text-sm leading-relaxed">{question.my_answer}</p>
+                          <div style={{ marginTop: '12px', backgroundColor: '#f9f5ef', border: '1px solid #ede6d6', borderRadius: '8px', padding: '12px 16px' }}>
+                            <div style={{ fontSize: '11px', color: '#9b7e6e', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>My Answer</div>
+                            <p style={{ color: '#5c3d2e', fontSize: '13px', lineHeight: '1.6' }}>{question.my_answer}</p>
                           </div>
                         )}
                       </div>
-
-                      {/* Delete button */}
-                      <button
-                        onClick={() => handleDelete(question.id)}
-                        disabled={deletingId === question.id}
-                        className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-lg text-xs transition disabled:opacity-50 shrink-0"
-                      >
+                      <button onClick={() => handleDelete(question.id)} disabled={deletingId === question.id} style={{ ...T.btnDanger, flexShrink: 0, opacity: deletingId === question.id ? 0.5 : 1 }}>
                         {deletingId === question.id ? '...' : 'Delete'}
                       </button>
                     </div>
