@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from database.connection import engine, Base
 from routes.auth import router as auth_router
 from routes.interviews import router as interviews_router
@@ -10,15 +13,18 @@ from routes.pdf import router as pdf_router
 
 Base.metadata.create_all(bind=engine)
 
+# Rate limiter setup
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(title="AI Interview Tracker API")
 
+# Attach limiter to app
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://ai-interview-tracker-five.vercel.app",
-    ],
+    allow_origins=["https://ai-interview-tracker.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,7 +35,7 @@ app.include_router(interviews_router)
 app.include_router(questions_router)
 app.include_router(dashboard_router)
 app.include_router(insights_router)
-app.include_router(pdf_router) 
+app.include_router(pdf_router)
 
 @app.get("/")
 def root():
