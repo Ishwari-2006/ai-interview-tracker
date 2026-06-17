@@ -171,7 +171,7 @@ def generate_report(user_data: dict, stats: dict, interviews: list, questions: l
         interview_table = Table(table_data, colWidths=[120, 110, 90, 90, 90])
         interview_table.setStyle(TableStyle([
             # Header row styling
-            ('BACKGROUND', (0, 0), (-1, 0), LIGHT_GRAY),
+            ('BACKGROUND', (0, 0), (-1, 0), DARK_BG),
             ('TEXTCOLOR', (0, 0), (-1, 0), WHITE),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             # Alternating row colors
