@@ -20,7 +20,7 @@ A full-stack web application that helps students track interviews, log questions
 
 ## 🎬 Demo Video
 
-**📹 [Watch Demo Video](#)** ← *Replace # with your actual video link*
+https://drive.google.com/file/d/1J1niVXh14raig0CYhIHrG4TT0VmiAbnP/view?usp=sharing
 
 ---
 
@@ -293,10 +293,10 @@ Get a free Groq API key at: https://console.groq.com
 
 ## 👩‍💻 Author
 
-**Ishwari Rautray** — 2nd Year B.Tech IT Student
+**Ishwari Rautray** — B.Tech IT Student
 
 - 🐙 GitHub: [@Ishwari-2006](https://github.com/Ishwari-2006)
-- 💼 LinkedIn: *[Add your LinkedIn URL here]*
+- 💼 LinkedIn: [Ishwari Rautray](https://linkedin.com/in/ishwari-rautray)
 
 ---
 
