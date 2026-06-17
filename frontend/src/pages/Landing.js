@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
+import heroImage from '../styles/interview-hero.avif';
 
 export default function Landing() {
   const { isLoggedIn } = useAuth();
@@ -12,35 +13,232 @@ export default function Landing() {
   }, [isLoggedIn, navigate]);
 
   const S = {
-    page: { backgroundColor: '#f5f0e8', minHeight: '100vh', fontFamily: 'Inter, sans-serif' },
-    hero: { backgroundColor: '#f5f0e8', padding: '80px 24px 60px' },
-    heroInner: { maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' },
-    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#ede6d6', border: '1px solid #ddd0bc', color: '#8b5e3c', fontSize: '12px', fontWeight: '500', padding: '6px 14px', borderRadius: '20px', marginBottom: '20px' },
-    h1: { fontFamily: 'Playfair Display, serif', fontSize: '52px', fontWeight: '700', color: '#2c1a0e', lineHeight: '1.15', marginBottom: '20px' },
-    accent: { color: '#8b5e3c' },
-    subtext: { color: '#6b4c3b', fontSize: '17px', lineHeight: '1.7', marginBottom: '32px', maxWidth: '460px' },
-    btnPrimary: { backgroundColor: '#2c1a0e', color: '#f5f0e8', padding: '14px 28px', borderRadius: '10px', fontWeight: '600', fontSize: '15px', textDecoration: 'none', display: 'inline-block', marginRight: '12px' },
-    btnSecondary: { backgroundColor: 'transparent', color: '#2c1a0e', padding: '14px 28px', borderRadius: '10px', fontWeight: '600', fontSize: '15px', textDecoration: 'none', display: 'inline-block', border: '1.5px solid #2c1a0e' },
-    heroImg: { width: '100%', borderRadius: '16px', objectFit: 'cover', height: '460px', boxShadow: '0 20px 60px rgba(44,26,14,0.15)' },
-    statsRow: { backgroundColor: '#ede6d6', borderTop: '1px solid #ddd0bc', borderBottom: '1px solid #ddd0bc', padding: '28px 24px' },
-    statsInner: { maxWidth: '700px', margin: '0 auto', display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '20px' },
-    statNum: { fontFamily: 'Playfair Display, serif', fontSize: '32px', fontWeight: '700', color: '#8b5e3c' },
-    statLabel: { color: '#6b4c3b', fontSize: '13px', marginTop: '4px' },
-    section: { padding: '80px 24px', maxWidth: '1100px', margin: '0 auto' },
-    sectionTitle: { fontFamily: 'Playfair Display, serif', fontSize: '36px', fontWeight: '700', color: '#2c1a0e', textAlign: 'center', marginBottom: '12px' },
-    sectionSub: { color: '#6b4c3b', textAlign: 'center', marginBottom: '48px', fontSize: '16px' },
-    grid3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' },
-    card: { backgroundColor: '#ffffff', border: '1px solid #ddd0bc', borderRadius: '16px', padding: '28px' },
-    cardIcon: { fontSize: '28px', marginBottom: '16px' },
-    cardTitle: { fontFamily: 'Playfair Display, serif', fontSize: '18px', color: '#2c1a0e', marginBottom: '8px', fontWeight: '600' },
-    cardText: { color: '#6b4c3b', fontSize: '14px', lineHeight: '1.7' },
-    stepNum: { fontFamily: 'Playfair Display, serif', fontSize: '48px', fontWeight: '700', color: '#ddd0bc', marginBottom: '8px' },
-    stepTitle: { fontFamily: 'Playfair Display, serif', fontSize: '18px', color: '#2c1a0e', marginBottom: '8px', fontWeight: '600' },
-    cta: { backgroundColor: '#2c1a0e', padding: '80px 24px', textAlign: 'center' },
-    ctaTitle: { fontFamily: 'Playfair Display, serif', fontSize: '36px', color: '#f5f0e8', marginBottom: '16px', fontWeight: '700' },
-    ctaSub: { color: '#c4956a', marginBottom: '32px', fontSize: '16px' },
-    ctaBtn: { backgroundColor: '#f5f0e8', color: '#2c1a0e', padding: '16px 36px', borderRadius: '10px', fontWeight: '700', fontSize: '16px', textDecoration: 'none', display: 'inline-block' },
-    footer: { backgroundColor: '#ede6d6', borderTop: '1px solid #ddd0bc', textAlign: 'center', padding: '20px', color: '#9b7e6e', fontSize: '13px' },
+    page: {
+      backgroundColor: '#f5f0e8',
+      minHeight: '100vh',
+      fontFamily: 'Inter, sans-serif',
+    },
+
+    hero: {
+      position: 'relative',
+      minHeight: '90vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '0 24px',
+      backgroundImage: `linear-gradient(
+        rgba(0, 0, 0, 0.55),
+        rgba(0, 0, 0, 0.55)
+      ), url(${heroImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    },
+
+    heroInner: {
+      maxWidth: '900px',
+      textAlign: 'center',
+    },
+
+    eyebrow: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '6px',
+      backgroundColor: 'rgba(255,255,255,0.15)',
+      border: '1px solid rgba(255,255,255,0.25)',
+      color: '#ffffff',
+      fontSize: '12px',
+      fontWeight: '500',
+      padding: '6px 14px',
+      borderRadius: '20px',
+      marginBottom: '20px',
+    },
+
+    h1: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '58px',
+      fontWeight: '700',
+      color: '#ffffff',
+      lineHeight: '1.15',
+      marginBottom: '20px',
+    },
+
+    accent: {
+      color: '#d4b08c',
+    },
+
+    subtext: {
+      color: '#f0f0f0',
+      fontSize: '18px',
+      lineHeight: '1.7',
+      marginBottom: '32px',
+      maxWidth: '650px',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+
+    btnPrimary: {
+      backgroundColor: '#d4b08c',
+      color: '#2c1a0e',
+      padding: '14px 28px',
+      borderRadius: '10px',
+      fontWeight: '600',
+      fontSize: '15px',
+      textDecoration: 'none',
+      display: 'inline-block',
+      marginRight: '12px',
+    },
+
+    btnSecondary: {
+      backgroundColor: 'transparent',
+      color: '#ffffff',
+      padding: '14px 28px',
+      borderRadius: '10px',
+      fontWeight: '600',
+      fontSize: '15px',
+      textDecoration: 'none',
+      display: 'inline-block',
+      border: '1.5px solid #ffffff',
+    },
+
+    statsRow: {
+      backgroundColor: '#ede6d6',
+      borderTop: '1px solid #ddd0bc',
+      borderBottom: '1px solid #ddd0bc',
+      padding: '28px 24px',
+    },
+
+    statsInner: {
+      maxWidth: '700px',
+      margin: '0 auto',
+      display: 'flex',
+      justifyContent: 'space-around',
+      flexWrap: 'wrap',
+      gap: '20px',
+    },
+
+    statNum: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '32px',
+      fontWeight: '700',
+      color: '#8b5e3c',
+    },
+
+    statLabel: {
+      color: '#6b4c3b',
+      fontSize: '13px',
+      marginTop: '4px',
+    },
+
+    section: {
+      padding: '80px 24px',
+      maxWidth: '1100px',
+      margin: '0 auto',
+    },
+
+    sectionTitle: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '36px',
+      fontWeight: '700',
+      color: '#2c1a0e',
+      textAlign: 'center',
+      marginBottom: '12px',
+    },
+
+    sectionSub: {
+      color: '#6b4c3b',
+      textAlign: 'center',
+      marginBottom: '48px',
+      fontSize: '16px',
+    },
+
+    grid3: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '24px',
+    },
+
+    card: {
+      backgroundColor: '#ffffff',
+      border: '1px solid #ddd0bc',
+      borderRadius: '16px',
+      padding: '28px',
+    },
+
+    cardIcon: {
+      fontSize: '28px',
+      marginBottom: '16px',
+    },
+
+    cardTitle: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '18px',
+      color: '#2c1a0e',
+      marginBottom: '8px',
+      fontWeight: '600',
+    },
+
+    cardText: {
+      color: '#6b4c3b',
+      fontSize: '14px',
+      lineHeight: '1.7',
+    },
+
+    stepNum: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '48px',
+      fontWeight: '700',
+      color: '#ddd0bc',
+      marginBottom: '8px',
+    },
+
+    stepTitle: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '18px',
+      color: '#2c1a0e',
+      marginBottom: '8px',
+      fontWeight: '600',
+    },
+
+    cta: {
+      backgroundColor: '#2c1a0e',
+      padding: '80px 24px',
+      textAlign: 'center',
+    },
+
+    ctaTitle: {
+      fontFamily: 'Playfair Display, serif',
+      fontSize: '36px',
+      color: '#f5f0e8',
+      marginBottom: '16px',
+      fontWeight: '700',
+    },
+
+    ctaSub: {
+      color: '#c4956a',
+      marginBottom: '32px',
+      fontSize: '16px',
+    },
+
+    ctaBtn: {
+      backgroundColor: '#f5f0e8',
+      color: '#2c1a0e',
+      padding: '16px 36px',
+      borderRadius: '10px',
+      fontWeight: '700',
+      fontSize: '16px',
+      textDecoration: 'none',
+      display: 'inline-block',
+    },
+
+    footer: {
+      backgroundColor: '#ede6d6',
+      borderTop: '1px solid #ddd0bc',
+      textAlign: 'center',
+      padding: '20px',
+      color: '#9b7e6e',
+      fontSize: '13px',
+    },
   };
 
   return (
@@ -50,31 +248,34 @@ export default function Landing() {
       {/* HERO */}
       <div style={S.hero}>
         <div style={S.heroInner}>
+
+          <h1 style={S.h1}>
+            Track Interviews.
+            <br />
+            Identify Weaknesses.
+            <br />
+            <span style={S.accent}>Get Hired Faster.</span>
+          </h1>
+
+          <p style={S.subtext}>
+            Log every interview, track questions asked, and let AI analyze
+            your patterns to generate a personalized study plan that helps
+            you crack your dream job.
+          </p>
+
           <div>
-            <h1 style={S.h1}>
-              Track Interviews.<br />
-              Identify Weaknesses.<br />
-              <span style={S.accent}>Get Hired Faster.</span>
-            </h1>
-            <p style={S.subtext}>
-              Log every interview, track questions asked, and let AI analyze your patterns to give you a personalized study plan.
-            </p>
-            <div>
-              <Link to="/register" style={S.btnPrimary}>Start Tracking Free →</Link>
-              <Link to="/login" style={S.btnSecondary}>Login</Link>
-            </div>
-          </div>
-          <div>
-            <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
-              alt="Professional interview"
-              style={S.heroImg}
-            />
+            <Link to="/register" style={S.btnPrimary}>
+              Start Tracking Free →
+            </Link>
+
+            <Link to="/login" style={S.btnSecondary}>
+              Login
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* STATS */}
+             {/* STATS */}
       <div style={S.statsRow}>
         <div style={S.statsInner}>
           {[
@@ -135,9 +336,9 @@ export default function Landing() {
 
       {/* CTA */}
       <div style={S.cta}>
-        <h2 style={S.ctaTitle}>Ready to land your dream internship?</h2>
+        <h2 style={S.ctaTitle}>Ready to land your dream job?</h2>
         <p style={S.ctaSub}>Join students who track smarter, not harder.</p>
-        <Link to="/register" style={S.ctaBtn}>Get Started — It's Free 🚀</Link>
+        <Link to="/register" style={S.ctaBtn}>Get Started !</Link>
       </div>
 
       <div style={S.footer}>Built with 💙 · AI Interview Tracker 2026</div>
