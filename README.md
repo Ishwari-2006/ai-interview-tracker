@@ -8,9 +8,7 @@ A full-stack web application that helps students track interviews, log questions
 
 ## 🌐 Live Demo
 
-| | Link |
-|---|---|
-| 🖥️ **Frontend** | https://ai-interview-tracker-five.vercel.app |
+https://ai-interview-tracker-five.vercel.app 
 
 
 > ⚠️ First load may take 30–50 seconds (Render free tier cold start). Please be patient!
