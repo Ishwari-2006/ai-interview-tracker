@@ -11,8 +11,7 @@ A full-stack web application that helps students track interviews, log questions
 | | Link |
 |---|---|
 | 🖥️ **Frontend** | https://ai-interview-tracker-five.vercel.app |
-| ⚙️ **Backend API** | https://ai-interview-tracker-backend.onrender.com |
-| 📖 **API Docs** | https://ai-interview-tracker-backend.onrender.com/docs |
+
 
 > ⚠️ First load may take 30–50 seconds (Render free tier cold start). Please be patient!
 
