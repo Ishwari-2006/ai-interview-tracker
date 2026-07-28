@@ -96,7 +96,7 @@ async def generate_insights(
                 "Content-Type": "application/json"
             },
             json={
-                "model": "qwen/qwen3-27b",
+                "model": "llama-3.1-8b-instant",
                 "messages": [
                     {"role": "user", "content": prompt}
                 ],
