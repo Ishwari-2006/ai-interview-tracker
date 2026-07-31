@@ -5,6 +5,9 @@ from typing import List, Optional
 from services.auth_service import get_current_user
 import httpx
 import os
+from database.connection import get_db
+from models.insight import AIInsight
+import uuid
 
 router = APIRouter(prefix="/insights", tags=["Insights"])
 
@@ -79,12 +82,14 @@ Format with these exact headers:
 ## Recommended Resources
 ## Keep Going!
 
-Be specific to their actual data, not generic advice."""
+Be specific to their actual data, not generic advice.
+and your response should be in no bold letters format."""
 
 @router.post("/generate")
 async def generate_insights(
     request: InsightsRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     prompt = build_prompt(request)
 
@@ -114,4 +119,44 @@ async def generate_insights(
         return {"insights": f"## Error\n{error_msg}"}
 
     text = result["choices"][0]["message"]["content"]
+    user_id = current_user["sub"]
+    weak_areas = [t.topic for t in request.stuck_by_topic if t.topic]
+    existing = db.query(AIInsight).filter(
+        AIInsight.user_id == user_id
+    ).first()
+    if existing:
+        existing.recommendations = text
+        existing.weak_areas = weak_areas
+        existing.total_interviews_analyzed = request.total_interviews
+        from datetime import datetime
+        existing.generated_at = datetime.utcnow()
+    else:
+        new_insight = AIInsight(
+            id=uuid.uuid4(),
+            user_id=user_id,
+            weak_areas=weak_areas,
+            recommendations=text,
+            total_interviews_analyzed=request.total_interviews
+        )
+        db.add(new_insight)
+    db.commit()
     return {"insights": text}
+
+@router.get("/saved")
+def get_saved_insight(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    insight = db.query(AIInsight).filter(
+        AIInsight.user_id == current_user["sub"]
+    ).first()
+    if not insight:
+        return {"insight": None}
+    return {
+        "insight": {
+            "recommendations": insight.recommendations,
+            "weak_areas": insight.weak_areas,
+            "total_interviews_analyzed": insight.total_interviews_analyzed,
+            "generated_at": insight.generated_at.isoformat() if insight.generated_at else None
+        }
+    }

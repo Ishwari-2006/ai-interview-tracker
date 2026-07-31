@@ -2,20 +2,34 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { getInterviews, getQuestions, getDashboardStats, generateInsights as callInsightsAPI } from '../services/api';
 import { T } from '../styles/theme';
+import api from '../services/api';
 
 export default function Insights() {
-  const [interviews, setInterviews] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
-  const [insights, setInsights] = useState(null);
-  const [error, setError] = useState('');
-  const [cooldown, setCooldown] = useState(false);
+  const [interviews, setInterviews]   = useState([]);
+  const [questions, setQuestions]     = useState([]);
+  const [stats, setStats]             = useState(null);
+  const [loading, setLoading]         = useState(true);
+  const [generating, setGenerating]   = useState(false);
+  const [insights, setInsights]       = useState(null);
+  const [savedInsight, setSavedInsight] = useState(null);   // ← NEW
+  const [error, setError]             = useState('');
+  const [cooldown, setCooldown]       = useState(false);
 
   useEffect(() => {
-    Promise.all([getInterviews(), getQuestions(), getDashboardStats()])
-      .then(([iRes, qRes, sRes]) => { setInterviews(iRes.data); setQuestions(qRes.data); setStats(sRes.data); })
+    Promise.all([
+      getInterviews(),
+      getQuestions(),
+      getDashboardStats(),
+      api.get('/insights/saved')          // ← fetch saved insight on load
+    ])
+      .then(([iRes, qRes, sRes, savedRes]) => {
+        setInterviews(iRes.data);
+        setQuestions(qRes.data);
+        setStats(sRes.data);
+        if (savedRes.data.insight) {
+          setSavedInsight(savedRes.data.insight);   // ← store it
+        }
+      })
       .catch(() => setError('Failed to load your data.'))
       .finally(() => setLoading(false));
   }, []);
@@ -37,6 +51,13 @@ export default function Insights() {
         stuck_by_topic: stats.stuck_by_topic,
       });
       setInsights(res.data.insights);
+      // ── update saved insight panel with new data ──
+      setSavedInsight({
+        recommendations: res.data.insights,
+        weak_areas: stats.stuck_by_topic.map(t => t.topic).filter(Boolean),
+        total_interviews_analyzed: stats.total_interviews,
+        generated_at: new Date().toISOString()
+      });
     } catch { setError('Failed to generate insights. Please try again.'); }
     finally { setGenerating(false); }
   };
@@ -56,9 +77,15 @@ export default function Insights() {
     return sections;
   };
 
-  const sectionIcon = { 'Performance Summary': '📊', 'Weak Areas': '🎯', '2-Week Study Plan': '📅', 'Recommended Resources': '📚', 'Keep Going!': '💪' };
+  const sectionIcon   = { 'Performance Summary': '📊', 'Weak Areas': '🎯', '2-Week Study Plan': '📅', 'Recommended Resources': '📚', 'Keep Going!': '💪' };
   const sectionAccent = { 'Performance Summary': '#ddeeff', 'Weak Areas': '#fdf0f0', '2-Week Study Plan': '#fdf8f0', 'Recommended Resources': '#f0faf4', 'Keep Going!': '#f5f0ff' };
   const sectionBorder = { 'Performance Summary': '#c0d8f0', 'Weak Areas': '#f0d0d0', '2-Week Study Plan': '#f0ddb0', 'Recommended Resources': '#c0dfc8', 'Keep Going!': '#d8c0f0' };
+
+  const formatDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  };
 
   if (loading) return <div style={T.page}><Navbar /><div style={{ textAlign: 'center', padding: '100px', color: '#9b7e6e', fontStyle: 'italic' }}>Loading your data...</div></div>;
 
@@ -75,15 +102,15 @@ export default function Insights() {
 
         {error && <div style={{ ...T.error, marginBottom: '20px' }}>{error}</div>}
 
-        {/* Data summary */}
+        {/* Data summary + Generate button */}
         <div style={{ ...T.card, marginBottom: '32px' }}>
           <h2 style={{ ...T.sectionTitle, marginBottom: '20px' }}>📋 Data ready for analysis</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '24px' }}>
             {[
               { label: 'Interviews', value: stats?.total_interviews || 0, icon: '🏢' },
-              { label: 'Questions', value: stats?.total_questions || 0, icon: '❓' },
-              { label: 'Stuck On', value: stats?.stuck_questions || 0, icon: '🎯' },
-              { label: 'Pass Rate', value: `${stats?.pass_rate || 0}%`, icon: '✅' },
+              { label: 'Questions',  value: stats?.total_questions  || 0, icon: '❓' },
+              { label: 'Stuck On',   value: stats?.stuck_questions  || 0, icon: '🎯' },
+              { label: 'Pass Rate',  value: `${stats?.pass_rate    || 0}%`, icon: '✅' },
             ].map(s => (
               <div key={s.label} style={{ ...T.statCard, backgroundColor: '#f9f5ef' }}>
                 <div style={{ fontSize: '20px', marginBottom: '6px' }}>{s.icon}</div>
@@ -101,9 +128,9 @@ export default function Insights() {
           {interviews.length === 0 && <p style={{ textAlign: 'center', color: '#9b7e6e', fontSize: '12px', marginTop: '8px' }}>Log at least one interview to generate insights</p>}
         </div>
 
-        {/* AI Response */}
+        {/* ── NEW: Freshly generated result ── */}
         {sections.length > 0 && (
-          <div>
+          <div style={{ marginBottom: '40px' }}>
             <h2 style={{ ...T.sectionTitle, marginBottom: '20px', fontSize: '22px' }}>✨ Your Personalized Analysis</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {sections.map(section => (
@@ -138,6 +165,58 @@ export default function Insights() {
             </div>
           </div>
         )}
+
+        {/* ── NEW: Last saved insight (shows on every visit) ── */}
+        {savedInsight && !insights && (
+          <div style={{ marginBottom: '40px' }}>
+            <h2 style={{ ...T.sectionTitle, marginBottom: '6px', fontSize: '20px' }}>🕒 Last Generated Plan</h2>
+            <p style={{ color: '#9b7e6e', fontSize: '12px', marginBottom: '20px' }}>
+              Generated on {formatDate(savedInsight.generated_at)} · Based on {savedInsight.total_interviews_analyzed} interview{savedInsight.total_interviews_analyzed !== 1 ? 's' : ''}
+            </p>
+
+            {/* weak areas chips */}
+            {savedInsight.weak_areas && savedInsight.weak_areas.length > 0 && (
+              <div style={{ marginBottom: '16px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#5c3d2e', fontWeight: '600', marginRight: '4px' }}>Weak areas:</span>
+                {savedInsight.weak_areas.map((area, i) => (
+                  <span key={i} style={{ backgroundColor: '#fdf0f0', border: '1px solid #f0d0d0', borderRadius: '20px', padding: '2px 12px', fontSize: '12px', color: '#991b1b' }}>
+                    {area}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* full saved plan sections */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {parseSections(savedInsight.recommendations).map(section => (
+                <div key={section.title} style={{ backgroundColor: sectionAccent[section.title] || '#f9f5ef', border: `1px solid ${sectionBorder[section.title] || '#ddd0bc'}`, borderRadius: '16px', padding: '24px' }}>
+                  <h3 style={{ fontFamily: 'Playfair Display, serif', fontSize: '18px', color: '#2c1a0e', marginBottom: '12px', fontWeight: '600' }}>
+                    {sectionIcon[section.title] || '•'} {section.title}
+                  </h3>
+                  <div style={{ color: '#5c3d2e', fontSize: '14px', lineHeight: '1.8', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {section.content.map((line, i) => {
+                      if (!line.trim()) return null;
+                      if (line.trim().startsWith('-') || line.trim().startsWith('•')) return (
+                        <div key={i} style={{ display: 'flex', gap: '8px' }}>
+                          <span style={{ color: '#8b5e3c', flexShrink: 0 }}>•</span>
+                          <span>{line.replace(/^[-•]\s*/, '')}</span>
+                        </div>
+                      );
+                      if (/^\d+\./.test(line.trim())) return (
+                        <div key={i} style={{ display: 'flex', gap: '8px' }}>
+                          <span style={{ color: '#8b5e3c', flexShrink: 0, fontWeight: '600' }}>{line.match(/^\d+\./)[0]}</span>
+                          <span>{line.replace(/^\d+\.\s*/, '')}</span>
+                        </div>
+                      );
+                      return <p key={i}>{line}</p>;
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
